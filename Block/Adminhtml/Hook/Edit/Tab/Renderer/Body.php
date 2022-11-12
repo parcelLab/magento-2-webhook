@@ -216,49 +216,9 @@ class Body extends Element
                     ->describeTable($this->orderStatusResource->getMainTable());
                 $attrCollection = $this->getAttrCollectionFromDb($collectionData);
                 break;
-            case HookType::NEW_INVOICE:
-                $collectionData = $this->invoiceResource->getConnection()
-                    ->describeTable($this->invoiceResource->getMainTable());
-                $attrCollection = $this->getAttrCollectionFromDb($collectionData);
-                break;
             case HookType::NEW_SHIPMENT:
                 $collectionData = $this->shipmentResource->getConnection()
                     ->describeTable($this->shipmentResource->getMainTable());
-                $attrCollection = $this->getAttrCollectionFromDb($collectionData);
-                break;
-            case HookType::NEW_CREDITMEMO:
-                $collectionData = $this->creditmemoResource->getConnection()
-                    ->describeTable($this->creditmemoResource->getMainTable());
-                $attrCollection = $this->getAttrCollectionFromDb($collectionData);
-                break;
-            case HookType::NEW_CUSTOMER:
-            case HookType::UPDATE_CUSTOMER:
-            case HookType::DELETE_CUSTOMER:
-            case HookType::CUSTOMER_LOGIN:
-                $collectionData = $this->customerResource->loadAllAttributes()->getSortedAttributes();
-                $attrCollection = $this->getAttrCollectionFromEav($collectionData);
-                break;
-            case HookType::NEW_PRODUCT:
-            case HookType::UPDATE_PRODUCT:
-            case HookType::DELETE_PRODUCT:
-                $collectionData = $this->catalogEavAttribute->getCollection()
-                    ->addFieldToFilter(AttributeSet::KEY_ENTITY_TYPE_ID, 4);
-                $attrCollection = $this->getAttrCollectionFromEav($collectionData);
-                break;
-            case HookType::NEW_CATEGORY:
-            case HookType::UPDATE_CATEGORY:
-            case HookType::DELETE_CATEGORY:
-                $collectionData = $this->categoryFactory->create()->getAttributes();
-                $attrCollection = $this->getAttrCollectionFromEav($collectionData);
-                break;
-            case HookType::ABANDONED_CART:
-                $collectionData = $this->quoteResource->getConnection()
-                    ->describeTable($this->quoteResource->getMainTable());
-                $attrCollection = $this->getAttrCollectionFromDb($collectionData);
-                break;
-            case HookType::SUBSCRIBER:
-                $collectionData = $this->subscriber->getConnection()
-                    ->describeTable($this->subscriber->getMainTable());
                 $attrCollection = $this->getAttrCollectionFromDb($collectionData);
                 break;
             default:

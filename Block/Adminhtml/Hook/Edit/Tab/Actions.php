@@ -33,6 +33,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Registry;
 use Mageplaza\Webhook\Block\Adminhtml\Hook\Edit\Tab\Renderer\Body;
 use Mageplaza\Webhook\Block\Adminhtml\Hook\Edit\Tab\Renderer\Headers;
+use Mageplaza\Webhook\Model\Config\Source\HookType;
 use Mageplaza\Webhook\Model\Config\Source\Authentication;
 use Mageplaza\Webhook\Model\Config\Source\ContentType;
 use Mageplaza\Webhook\Model\Config\Source\Method;
@@ -109,6 +110,15 @@ class Actions extends Generic implements TabInterface
         $form->setHtmlIdPrefix('hook_');
         $form->setFieldNameSuffix('hook');
 
+        $eventTypeUrlPath = '<please insert event type>';
+        if ($this->_request->getParam('type') === HookType::ORDER || $hook->getHookType() === HookType::ORDER) {
+            $eventTypeUrlPath = 'order';
+        } else if ($this->_request->getParam('type') === HookType::NEW_ORDER_COMMENT || $hook->getHookType() === HookType::NEW_ORDER_COMMENT) {
+            $eventTypeUrlPath = 'new_order_comment';
+        } else if ($this->_request->getParam('type') === HookType::NEW_SHIPMENT || $hook->getHookType() === HookType::NEW_SHIPMENT) {
+            $eventTypeUrlPath = 'new_shipment';
+        }
+
         $fieldset = $form->addFieldset('actions_fieldset', [
             'legend' => __('Actions'),
             'class' => 'fieldset-wide'
@@ -117,23 +127,24 @@ class Actions extends Generic implements TabInterface
             'name' => 'payload_url',
             'label' => __('Payload URL'),
             'title' => __('Payload URL'),
+            'value' => 'https://api.parcellab.com/magento2/' . $eventTypeUrlPath,
             'required' => true,
-            'note' => __('You can insert a variable'),
-            'after_element_html' => '<a id="insert-variable-upload" class="btn">' . __('Insert Variable') . '</a>',
+            'note' => 'Base URL is <i>https://api.parcellab.com/magento2/</i>, followed by allowed event types <i>order</i>, <i>new_order_comment</i>, and <i>new_shipment</i>',
         ]);
         $fieldset->addField('method', 'select', [
             'name' => 'method',
             'label' => __('Method'),
             'title' => __('Method'),
+            'value' => 'POST',
             'values' => $this->method->toOptionArray(),
+            'disabled' => true,
         ]);
 
-        $authentication = $fieldset->addField('authentication', 'select', [
+        $authentication = $fieldset->addField('authentication', 'hidden', [
             'name' => 'authentication',
             'label' => __('Authentication'),
             'title' => __('Authentication'),
             'values' => $this->authentication->toOptionArray(),
-
         ]);
         $username = $fieldset->addField('username', 'text', [
             'name' => 'username',
@@ -192,8 +203,9 @@ class Actions extends Generic implements TabInterface
             'name' => 'content_type',
             'label' => __('Content Type'),
             'title' => __('Content Type'),
+            'value' => 'application/json',
             'values' => $this->contentType->toOptionArray(),
-
+            'disabled' => true,
         ]);
         /** @var RendererInterface $rendererBlock */
         $rendererBlock = $this->getLayout()->createBlock(Body::class);
@@ -201,10 +213,12 @@ class Actions extends Generic implements TabInterface
             'name' => 'body',
             'label' => __('Body'),
             'title' => __('Body'),
-            'note' => __(
-                'Supports <a href="%1" target="_blank">Liquid template</a>',
-                'https://shopify.github.io/liquid/'
-            )
+            'value' => '{ "increment_id": "{{ item.increment_id }}" }',
+            'note' => 'For suggested bodies per event type please refer to:' .
+                '<br />' .
+                '<a href="https://parcellab.com/integrations/magento2" style="font-weight: bold;" target="_blank">parcelLab Magento 2 Integration Guide</a>' .
+                '<br />' .
+                'Supports <a href="https://shopify.github.io/liquid/" target="_blank">Liquid template</a>',
         ])->setRenderer($rendererBlock);
 
         $refField = $this->fieldFactory->create([

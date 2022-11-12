@@ -24,9 +24,10 @@
     <default>
         <mp_webhook>
             <general>
-                <enabled>1</enabled>
+                <enabled>0</enabled>
                 <abandoned_time>10</abandoned_time>
-                <keep_log>10</keep_log>
+                <keep_log>100</keep_log>
+                <send_to>support@parcellab.com</send_to>
                 <alert_enabled>0</alert_enabled>
                 <email_template>mp_webhook_general_email_template</email_template>
             </general>

@@ -62,7 +62,7 @@ class Index extends Action
     public function execute()
     {
         $resultPage = $this->resultPageFactory->create();
-        $resultPage->getConfig()->getTitle()->prepend(__('Manage Hooks'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Manage Events for Transfer to parcelLab'));
 
         return $resultPage;
     }

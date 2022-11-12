@@ -96,6 +96,15 @@ class General extends Generic implements TabInterface
         $form->setHtmlIdPrefix('hook_');
         $form->setFieldNameSuffix('hook');
 
+        $eventTypeUrlPath = '<please insert event type>';
+        if ($this->_request->getParam('type') === HookType::ORDER || $hook->getHookType() === HookType::ORDER) {
+            $eventTypeUrlPath = 'order';
+        } else if ($this->_request->getParam('type') === HookType::NEW_ORDER_COMMENT || $hook->getHookType() === HookType::NEW_ORDER_COMMENT) {
+            $eventTypeUrlPath = 'new_order_comment';
+        } else if ($this->_request->getParam('type') === HookType::NEW_SHIPMENT || $hook->getHookType() === HookType::NEW_SHIPMENT) {
+            $eventTypeUrlPath = 'new_shipment';
+        }
+
         $fieldset = $form->addFieldset('base_fieldset', [
             'legend' => __('General Information'),
             'class' => 'fieldset-wide'
@@ -105,6 +114,7 @@ class General extends Generic implements TabInterface
             'name' => 'name',
             'label' => __('Name'),
             'title' => __('Name'),
+            'value' => 'parcelLab Transfer Webhook on Event ' . $eventTypeUrlPath,
             'required' => true
         ]);
         $fieldset->addField('hook_type', 'hidden', [
@@ -135,7 +145,8 @@ class General extends Generic implements TabInterface
                 'label' => __('Store Views'),
                 'title' => __('Store Views'),
                 'required' => true,
-                'values' => $this->systemStore->getStoreValuesForForm(false, true)
+                'values' => $this->systemStore->getStoreValuesForForm(false, true),
+                'value' => 0,
             ])->setRenderer($rendererBlock);
         } else {
             $fieldset->addField('store_ids', 'hidden', [
@@ -148,7 +159,8 @@ class General extends Generic implements TabInterface
             'name' => 'priority',
             'label' => __('Priority'),
             'title' => __('Priority'),
-            'note' => __('0 is highest')
+            'note' => __('0 is highest'),
+            'value' => 10
         ]);
 
         $form->addValues($hook->getData());
