@@ -148,8 +148,9 @@ class Actions extends Generic implements TabInterface
         ]);
         $username = $fieldset->addField('username', 'text', [
             'name' => 'username',
-            'label' => __('Username'),
-            'title' => __('Username'),
+            'label' => 'parcelLab User ID',
+            'title' => 'parcelLab User ID',
+            'note' => 'Retrieve your User ID from the parcelLab Portal',
         ]);
         $realm = $fieldset->addField('realm', 'text', [
             'name' => 'realm',
@@ -158,8 +159,9 @@ class Actions extends Generic implements TabInterface
         ]);
         $password = $fieldset->addField('password', 'password', [
             'name' => 'password',
-            'label' => __('Password'),
-            'title' => __('Password'),
+            'label' => 'parcelLab API Token',
+            'title' => 'parcelLab API Token',
+            'note' => 'Requires write access',
         ]);
         $nonce = $fieldset->addField('nonce', 'text', [
             'name' => 'nonce',

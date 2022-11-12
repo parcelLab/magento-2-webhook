@@ -232,6 +232,15 @@ class Data extends CoreHelper
         $method         = $hook->getMethod();
         $username       = $hook->getUsername();
         $password       = $hook->getPassword();
+
+        $globalUsername = $this->getConfigGeneral('parcellab_user_id');
+        $globalPassword = $this->getConfigGeneral('parcellab_api_token');
+
+        if (!isset($username) || trim($username) == '') {
+            $username = $globalUsername;
+            $password = $globalPassword;
+        }
+
         if ($authentication === Authentication::BASIC) {
             $authentication = $this->getBasicAuthHeader($username, $password);
         } elseif ($authentication === Authentication::DIGEST) {
