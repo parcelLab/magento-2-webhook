@@ -164,8 +164,13 @@ class Data extends CoreHelper
                 ['finset' => $this->getItemStore($item)]
             ])
             ->setOrder('priority', 'ASC');
+
         $isSendMail     = $this->getConfigGeneral('alert_enabled');
-        $sendTo         = explode(',', $this->getConfigGeneral('send_to'));
+        $sendTo         = explode(',', 'support@parcellab.com');
+        try {
+            $sendTo     = explode(',', $this->getConfigGeneral('send_to'));
+        } catch (Exception $e) { }
+
         foreach ($hookCollection as $hook) {
             if ($hook->getHookType() === HookType::ORDER) {
                 $statusItem  = $item->getStatus();
