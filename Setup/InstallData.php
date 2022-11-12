@@ -26,7 +26,7 @@ class InstallData implements InstallDataInterface
             'status' => 0,
             'store_ids' => '0',
             'hook_type' => 'order',
-            'order_status' => 'pending,fraud,complete,closed,canceled,holded',
+            'order_status' => 'pending,processing,fraud,complete,closed,canceled,holded',
             'priority' => 10,
             'payload_url' => 'https://api.parcellab.com/magento2/order',
             'method' => 'POST',
