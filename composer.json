@@ -7,7 +7,7 @@
   },
   "type": "magento2-module",
   "version": "2.4.16",
-  "license": "proprietary",
+  "license": "MIT",
   "authors": [
     {
       "name": "parcelLab",
@@ -22,6 +22,9 @@
       "role": "Technical Support"
     }
   ],
+  "conflict": {
+    "mageplaza/module-webhook": ">=0.0.1"
+  },
   "autoload": {
     "files": [
       "registration.php"
