@@ -279,6 +279,15 @@ class Data extends CoreHelper
                 $item->setData('billingAddress', $item->getBillingAddress());
             }
 
+            if ($item instanceof \Magento\Sales\Model\Order\Shipment) {
+                if ($item->getTracksCollection()) {
+                    if ($item->getTracksCollection()->getItems()) {
+                        $tracksCollection = $item->getTracksCollection()->getItems();
+                        $item->setData('tracksCollection', $tracksCollection);
+                    }
+                }
+            }
+
             return $template->render([
                 'item' => $item,
             ]);
