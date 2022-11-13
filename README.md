@@ -4,7 +4,7 @@ _Please note:_ This extension is a fork of the excellent [Magento 2 Webhook by M
 
 ## Install & Setup Guide
 
-> **Important:** If you have [Mageplaza Webhook](https://www.mageplaza.com/magento-2-webhook/) already installed, **DO NOT INSTALL** this extension and follow our setup guide instead.
+> **Important:** If you have [Mageplaza Webhook](https://www.mageplaza.com/magento-2-webhook/) already installed, **DO NOT INSTALL** this extension and follow our setup guide instead: [Setup Guide with Mageplaza Webhook](https://github.com/parcelLab/magento-2-webhook/blob/2.4/setup-guide-with-mageplaza.md)
 
 Run the following command in Magento 2 root folder:
 
@@ -65,6 +65,15 @@ Please share both the `Response` as well as the `Request Body` when requesting s
 
 <img width="400" alt="image" src="https://user-images.githubusercontent.com/625618/201497496-22f90aba-28a2-4b1b-93d0-2d8f1c895d8a.png">
 
+#### Q: I am unsure whether I have "Magento 2 Webhook" by Mageplaza installed, how can I check?
+
+Run `php bin/magento module:status` and check whether `Mageplaza_Webhook` is listed. If it is, please don't install this extension but rather follow our [Setup Guide with Mageplaza Webhook](https://github.com/parcelLab/magento-2-webhook/blob/2.4/setup-guide-with-mageplaza.md).
+
+#### Q: I already have "Magento 2 Webhook" by Mageplaza installed, how can I integrate with parcelLab?
+
+The easiest way is to follow our setup guide for this extension, which will take you less than 15 minutes to complete:
+
+[Setup Guide with Mageplaza Webhook](https://github.com/parcelLab/magento-2-webhook/blob/2.4/setup-guide-with-mageplaza.md)
 ## Credit
 
 This extension is a fork of the excellent [Magento 2 Webhook by Mageplaza](https://www.mageplaza.com/magento-2-webhook/) published under MIT license [on Github](https://github.com/mageplaza/magento-2-webhook) (see fork source).

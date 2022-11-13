@@ -1,0 +1,53 @@
+{
+"state": "{{ item.state }}",
+"entity_id": "{{ item.entity_id }}",
+"order_id": "{{ item.order_id }}",
+"ext_order_id": "{{ item.ext_order_id }}",
+"increment_id": "{{ item.increment_id }}",
+"customer_id": "{{ item.customer_id }}",
+"ext_customer_id": "{{ item.ext_customer_id }}",
+"store_id": "{{ item.store_id }}",
+"created_at": "{{ item.created_at }}",
+"customer_is_guest": "{{ item.customer_is_guest }}",
+"weight": "{{ item.weight }}",
+
+"items": [
+{% for product in item.items -%}
+{%- if forloop.length > 0 -%}
+{
+  "name": "{{ product.name | replace: '"', '%22%' | replace: '\', '' | strip }}",
+  "sku": "{{ product.sku | replace: '"', '%22%' | replace: '\', '' | strip }}",
+  "qty_ordered": "{{ product.qty_ordered }}"
+}
+{% unless forloop.last %},{% endunless -%}
+{%- endif -%}
+{% endfor %}
+],
+
+"shippingAddress": 
+{
+"firstname": "{{ item.shippingAddress.firstname | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"lastname": "{{ item.shippingAddress.lastname | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"email": "{{ item.shippingAddress.email }}",
+"telephone": "{{ item.shippingAddress.telephone | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"region": "{{ item.shippingAddress.region | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"street": "{{ item.shippingAddress.street | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"city": "{{ item.shippingAddress.city | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"postcode": "{{ item.shippingAddress.postcode | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"country_id": "{{ item.shippingAddress.country_id }}"
+},
+
+"billingAddress": 
+{
+"firstname": "{{ item.billingAddress.firstname | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"lastname": "{{ item.billingAddress.lastname | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"email": "{{ item.billingAddress.email }}",
+"telephone": "{{ item.billingAddress.telephone | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"street": "{{ item.billingAddress.street | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"region": "{{ item.billingAddress.region | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"city": "{{ item.billingAddress.city | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"postcode":  "{{ item.billingAddress.postcode | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"country_id": "{{ item.billingAddress.country_id }}"
+}
+
+}
