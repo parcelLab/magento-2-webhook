@@ -46,7 +46,7 @@
 "email": "{{ item.shippingAddress.email }}",
 "telephone": "{{ item.shippingAddress.telephone | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
 "region": "{{ item.shippingAddress.region | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
-"street": "{{ item.shippingAddress.street | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"street": "{{ item.shippingAddress.street  | strip_html | replace: '"', '%22%' | replace: '\', '' | url_encode | url_decode | newline_to_br | strip_newlines | strip }}",
 "city": "{{ item.shippingAddress.city | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
 "postcode": "{{ item.shippingAddress.postcode | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
 "country_id": "{{ item.shippingAddress.country_id }}"
@@ -58,7 +58,7 @@
 "lastname": "{{ item.billingAddress.lastname | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
 "email": "{{ item.billingAddress.email }}",
 "telephone": "{{ item.billingAddress.telephone | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
-"street": "{{ item.billingAddress.street | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
+"street": "{{ item.billingAddress.street  | strip_html | replace: '"', '%22%' | replace: '\', '' | url_encode | url_decode | newline_to_br | strip_newlines | strip }}",
 "region": "{{ item.billingAddress.region | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
 "city": "{{ item.billingAddress.city | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
 "postcode":  "{{ item.billingAddress.postcode | strip_html | replace: '"', '%22%' | replace: '\', '' | strip }}",
