@@ -30,7 +30,7 @@
     <event name="sales_order_status_history_save_after">
         <observer name="mp_wh_before_order" instance="Mageplaza\Webhook\Observer\AfterOrderComment"/>
     </event>
-    <event name="sales_order_shipment_save_after">
-        <observer name="mp_wh_new_shipment" instance="Mageplaza\Webhook\Observer\AfterShipment"/>
+    <event name="sales_order_shipment_save_commit_after">
+        <observer name="mp_wh_new_shipment_commit" instance="Mageplaza\Webhook\Observer\AfterShipment"/>
     </event>
 </config>
