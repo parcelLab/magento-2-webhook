@@ -285,6 +285,16 @@ class Data extends CoreHelper
                 $item->setStockItem(null);
             }
 
+            $item->setData('storeUrl', $item->getStore()->getBaseUrl());
+
+            foreach ($item->getItems() as $orderItem) {
+
+                $product = $orderItem->getProduct();
+                $orderItem->setData('image', $product->getData('image'));
+                $orderItem->setData('productUrl', $product->getUrlKey());
+
+            }
+
             if ($item->getShippingAddress()) {
                 $item->setData('shippingAddress', $item->getShippingAddress()->getData());
             }
