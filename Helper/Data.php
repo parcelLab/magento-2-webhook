@@ -353,15 +353,21 @@ class Data extends CoreHelper
 
         if($product->getTypeId() === Configurable::TYPE_CODE){
             // if product is a configurable product
-            $image = $product->getData('image');
-            $productUrl = $product->getUrlKey();
+            $targetProduct = $product;
         }else{
-            // if simple product, get URL from configurable
             $parentIds = $this->configurable->getParentIdsByChild($product->getId());
-            $configurable = $this->productFactory->create()->load($parentIds[0]);
-            $image = $configurable->getData('image');
-            $productUrl = $configurable->getUrlKey();
+            if(count($parentIds) > 0){
+                // if simple product has configurable product, get URL from configurable
+                $configurable = $this->productFactory->create()->load($parentIds[0]);
+                $targetProduct = $configurable;
+            }else{
+                // simple product without configurable
+                $targetProduct = $product;
+            }
         }
+
+        $image = $targetProduct->getData('image');
+        $productUrl = $targetProduct->getUrlKey();
         return [$image, $productUrl];
     }
 
