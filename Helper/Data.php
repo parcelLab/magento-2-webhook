@@ -25,6 +25,8 @@ use Exception;
 use Liquid\Template;
 use Magento\Backend\Model\UrlInterface;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Model\ProductFactory;
+use Magento\ConfigurableProduct\Model\Product\Type\Configurable;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\App\Area;
 use Magento\Framework\App\Helper\Context;
@@ -34,6 +36,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\HTTP\Adapter\CurlFactory;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Sales\Api\Data\OrderItemInterface;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 use Mageplaza\Core\Helper\AbstractData as CoreHelper;
@@ -91,6 +94,16 @@ class Data extends CoreHelper
     protected $customer;
 
     /**
+     * @var Configurable $configurable
+     * */
+    protected $configurable;
+
+    /**
+     * @var ProductFactory $productFactory
+     * */
+    protected $productFactory;
+
+    /**
      * Data constructor.
      *
      * @param Context $context
@@ -103,6 +116,8 @@ class Data extends CoreHelper
      * @param HookFactory $hookFactory
      * @param HistoryFactory $historyFactory
      * @param CustomerRepositoryInterface $customer
+     * @param Configurable $configurable
+     * @param ProductFactory $productFactory
      */
     public function __construct(
         Context $context,
@@ -114,7 +129,9 @@ class Data extends CoreHelper
         LiquidFilters $liquidFilters,
         HookFactory $hookFactory,
         HistoryFactory $historyFactory,
-        CustomerRepositoryInterface $customer
+        CustomerRepositoryInterface $customer,
+        Configurable $configurable,
+        ProductFactory $productFactory
     ) {
         $this->liquidFilters    = $liquidFilters;
         $this->curlFactory      = $curlFactory;
@@ -123,6 +140,8 @@ class Data extends CoreHelper
         $this->transportBuilder = $transportBuilder;
         $this->backendUrl       = $backendUrl;
         $this->customer         = $customer;
+        $this->configurable     = $configurable;
+        $this->productFactory   = $productFactory;
 
         parent::__construct($context, $objectManager, $storeManager);
     }
@@ -285,14 +304,17 @@ class Data extends CoreHelper
                 $item->setStockItem(null);
             }
 
-            $item->setData('storeUrl', $item->getStore()->getBaseUrl());
+            if ($item instanceof \Magento\Sales\Model\Order) {
+                $item->setData('storeUrl', $item->getStore()->getBaseUrl());
 
-            foreach ($item->getItems() as $orderItem) {
+                foreach ($item->getItems() as $orderItem) {
+                    /** @var Product $product */
+                    $product = $orderItem->getProduct();
+                    [$image, $productUrl] = $this->getProductUrls($product);
 
-                $product = $orderItem->getProduct();
-                $orderItem->setData('image', $product->getData('image'));
-                $orderItem->setData('productUrl', $product->getUrlKey());
-
+                    $orderItem->setData('image', $image);
+                    $orderItem->setData('productUrl', $productUrl);
+                }
             }
 
             if ($item->getShippingAddress()) {
@@ -320,6 +342,27 @@ class Data extends CoreHelper
         }
 
         return '';
+    }
+
+    /**
+     * @param Product $product
+     *
+     * @return array
+     * */
+    private function getProductUrls($product){
+
+        if($product->getTypeId() === Configurable::TYPE_CODE){
+            // if product is a configurable product
+            $image = $product->getData('image');
+            $productUrl = $product->getUrlKey();
+        }else{
+            // if simple product, get URL from configurable
+            $parentIds = $this->configurable->getParentIdsByChild($product->getId());
+            $configurable = $this->productFactory->create()->load($parentIds[0]);
+            $image = $configurable->getData('image');
+            $productUrl = $configurable->getUrlKey();
+        }
+        return [$image, $productUrl];
     }
 
     /**
