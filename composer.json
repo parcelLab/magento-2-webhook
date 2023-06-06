@@ -3,7 +3,7 @@
   "description": "Magento 2 Webhook Extension for parcelLab",
   "require": {
     "mageplaza/module-core": "^1.4.12",
-    "liquid/liquid": "^1.4.36"
+    "liquid/liquid": "^1.4.37"
   },
   "type": "magento2-module",
   "version": "2.4.20",
