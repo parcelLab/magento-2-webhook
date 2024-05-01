@@ -131,7 +131,7 @@ class Actions extends Generic implements TabInterface
             'required' => true,
             'note' => 'Base URL is <i>https://api.parcellab.com/magento2/</i>, followed by allowed event types <i>order</i>, <i>new_order_comment</i>, and <i>new_shipment</i>',
         ]);
-        $fieldset->addField('method', 'select', [
+        $fieldset->addField('method', 'hidden', [
             'name' => 'method',
             'label' => __('Method'),
             'title' => __('Method'),
@@ -146,7 +146,7 @@ class Actions extends Generic implements TabInterface
             'title' => __('Authentication'),
             'values' => $this->authentication->toOptionArray(),
         ]);
-        $username = $fieldset->addField('username', 'text', [
+        $username = $fieldset->addField('username', 'hidden', [
             'name' => 'username',
             'label' => 'parcelLab User ID',
             'title' => 'parcelLab User ID',
@@ -157,7 +157,7 @@ class Actions extends Generic implements TabInterface
             'label' => __('Realm'),
             'title' => __('Realm'),
         ]);
-        $password = $fieldset->addField('password', 'password', [
+        $password = $fieldset->addField('password', 'hidden', [
             'name' => 'password',
             'label' => 'parcelLab API Token',
             'title' => 'parcelLab API Token',
@@ -201,7 +201,7 @@ class Actions extends Generic implements TabInterface
             'label' => __('Header'),
             'title' => __('Header'),
         ])->setRenderer($rendererBlock);
-        $fieldset->addField('content_type', 'select', [
+        $fieldset->addField('content_type', 'hidden', [
             'name' => 'content_type',
             'label' => __('Content Type'),
             'title' => __('Content Type'),
@@ -210,18 +210,18 @@ class Actions extends Generic implements TabInterface
             'disabled' => true,
         ]);
         /** @var RendererInterface $rendererBlock */
-        $rendererBlock = $this->getLayout()->createBlock(Body::class);
-        $fieldset->addField('body', 'textarea', [
-            'name' => 'body',
-            'label' => __('Body'),
-            'title' => __('Body'),
-            'value' => '{ "increment_id": "{{ item.increment_id }}" }',
-            'note' => 'For suggested bodies per event type please refer to:' .
-                '<br />' .
-                '<a href="https://parcellab.com/integrations/magento2" style="font-weight: bold;" target="_blank">parcelLab Magento 2 Integration Guide</a>' .
-                '<br />' .
-                'Supports <a href="https://shopify.github.io/liquid/" target="_blank">Liquid template</a>',
-        ])->setRenderer($rendererBlock);
+        // $rendererBlock = $this->getLayout()->createBlock(Body::class);
+        // $fieldset->addField('body', 'textarea', [
+        //     'name' => 'body',
+        //     'label' => __('Body'),
+        //     'title' => __('Body'),
+        //     'value' => '{ "increment_id": "{{ item.increment_id }}" }',
+        //     'note' => 'For suggested bodies per event type please refer to:' .
+        //         '<br />' .
+        //         '<a href="https://parcellab.com/integrations/magento2" style="font-weight: bold;" target="_blank">parcelLab Magento 2 Integration Guide</a>' .
+        //         '<br />' .
+        //         'Supports <a href="https://shopify.github.io/liquid/" target="_blank">Liquid template</a>',
+        // ])->setRenderer($rendererBlock);
 
         $refField = $this->fieldFactory->create([
             'fieldData' => ['value' => 'basic,digest', 'separator' => ','],
