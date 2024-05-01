@@ -2,6 +2,10 @@
 
 _Please note:_ This extension is a fork of the excellent [Magento 2 Webhook by Mageplaza](https://www.mageplaza.com/magento-2-webhook/) published under MIT license [on Github](https://github.com/mageplaza/magento-2-webhook) (see fork source). This fork simply eases to simplify setup for integration with parcelLab by providing appropriate defaults.
 
+> **Compatibility notice:**
+> For Magento < `2.6` use plugin version `2.4.21`
+> For Magento >= `2.6` use plugin version `2.4.22` or later 
+
 ## Install & Setup Guide
 
 > **Important:** If you have [Mageplaza Webhook](https://www.mageplaza.com/magento-2-webhook/) already installed, **DO NOT INSTALL** this extension and follow our setup guide instead: [Setup Guide with Mageplaza Webhook](https://github.com/parcelLab/magento-2-webhook/blob/2.4/setup-guide-with-mageplaza.md)
