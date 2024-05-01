@@ -48,7 +48,7 @@ use Mageplaza\Webhook\Model\Config\Source\Status;
 use Mageplaza\Webhook\Model\HistoryFactory;
 use Mageplaza\Webhook\Model\HookFactory;
 use Mageplaza\Webhook\Model\ResourceModel\Hook\Collection;
-use Zend_Http_Response;
+use Laminas\Http\Response;
 
 /**
  * Class Data
@@ -206,7 +206,7 @@ class Data extends CoreHelper
                 'hook_type'   => $hook->getHookType(),
                 'priority'    => $hook->getPriority(),
                 'payload_url' => $this->generateLiquidTemplate($item, $hook->getPayloadUrl()),
-                'body'        => $this->generateLiquidTemplate($item, $hook->getBody())
+                'body'        => $this->generateItemJsonString($item)
             ];
             $history->addData($data);
             try {
@@ -255,34 +255,105 @@ class Data extends CoreHelper
         $globalUsername = $this->getConfigGeneral('parcellab_user_id');
         $globalPassword = $this->getConfigGeneral('parcellab_api_token');
 
-        if (!isset($username) || trim($username) == '') {
-            $username = $globalUsername;
-            $password = $globalPassword;
-        }
+        $authentication = $this->getBasicAuthHeader($globalUsername, $globalPassword);
 
-        if ($authentication === Authentication::BASIC) {
-            $authentication = $this->getBasicAuthHeader($username, $password);
-        } elseif ($authentication === Authentication::DIGEST) {
-            $authentication = $this->getDigestAuthHeader(
-                $url,
-                $method,
-                $username,
-                $hook->getRealm(),
-                $password,
-                $hook->getNonce(),
-                $hook->getAlgorithm(),
-                $hook->getQop(),
-                $hook->getNonceCount(),
-                $hook->getClientNonce(),
-                $hook->getOpaque()
-            );
-        }
-
-        $body        = $log ? $log->getBody() : $this->generateLiquidTemplate($item, $hook->getBody());
+        $body        = $log ? $log->getBody() : $this->generateItemJsonString($item);
         $headers     = $hook->getHeaders();
         $contentType = $hook->getContentType();
 
         return $this->sendHttpRequest($headers, $authentication, $contentType, $url, $body, $method);
+    }
+
+    public function generateItemJsonString($item)
+    {
+        $result = [
+            "state" => $item->getState(),
+            "entity_id" => $item->getEntityId(),
+            "order_id" => $item->getOrderId(),
+            "ext_order_id" => $item->getExtOrderId(),
+            "increment_id" => $item->getIncrementId(),
+            "customer_id" => $item->getCustomerId(),
+            "ext_customer_id" => $item->getExtCustomerId(),
+            "store_id" => $item->getStoreId(),
+            "created_at" => $item->getCreatedAt(),
+            "customer_is_guest" => $item->getCustomerIsGuest(),
+            "weight" => $item->getWeight(),
+            "shipping_description" => $item->getShippingDescription(),
+            "shipment_status" => $item->getShipmentStatus(),
+            "shipping_label" => $item->getShippingLabel(),
+        ];
+
+        if ($item->getShippingAddress()) {
+            $shippingAddressData = $item->getShippingAddress();
+            $result["shippingAddress"] = [
+                "company" => $shippingAddressData->getCompany(),
+                "firstname" => $shippingAddressData->getFirstname(),
+                "lastname" => $shippingAddressData->getLastname(),
+                "email" => $shippingAddressData->getEmail(),
+                "telephone" => $shippingAddressData->getTelephone(),
+                "region" => $shippingAddressData->getRegion(),
+                "street" => $shippingAddressData->getStreet()
+                    ? join("<br />", $shippingAddressData->getStreet())
+                    : "",
+                "city" => $shippingAddressData->getCity(),
+                "postcode" => $shippingAddressData->getPostcode(),
+                "country_id" => $shippingAddressData->getCountryId(),
+                "customs_code" => $shippingAddressData->getCustomsCode(),
+            ];
+        }
+
+        if ($item->getBillingAddress()) {
+            $billingAddressData = $item->getBillingAddress();
+            $result["billingAddress"] = [
+                "company" => $billingAddressData->getCompany(),
+                "firstname" => $billingAddressData->getFirstname(),
+                "lastname" => $billingAddressData->getLastname(),
+                "email" => $billingAddressData->getEmail(),
+                "telephone" => $billingAddressData->getTelephone(),
+                "street" => $billingAddressData->getStreet()
+                    ? join("<br />", $billingAddressData->getStreet())
+                    : "",
+                "region" => $billingAddressData->getRegion(),
+                "city" => $billingAddressData->getCity(),
+                "postcode" => $billingAddressData->getPostcode(),
+                "country_id" => $billingAddressData->getCountryId(),
+            ];
+        }
+
+        if ($item instanceof \Magento\Sales\Model\Order) {
+            $result["storeUrl"] = $item->getStore()->getBaseUrl();
+            $result["items"] = [];
+            foreach ($item->getItems() as $orderItem) {
+                /** @var Product $product */
+                $product = $orderItem->getProduct();
+                [$image, $productUrl] = $this->getProductUrls($product);
+                $result["items"][] = [
+                    "name" => $orderItem->getName(),
+                    "sku" => $orderItem->getSku(),
+                    "product_url" => $productUrl,
+                    "image_url" => $image,
+                    "product_type" => $product->getTypeId(),
+                    "qty_ordered" => $orderItem->getQtyOrdered(),
+                ];
+            }
+        }
+
+        if ($item instanceof \Magento\Sales\Model\Order\Shipment) {
+            $result["tracksCollection"] = [];
+            if ($item->getTracksCollection()) {
+                if ($item->getTracksCollection()->getItems()) {
+                    $tracksCollection = $item->getTracksCollection()->getItems();
+                    foreach ($tracksCollection as $track) {
+                        $result["tracksCollection"][] = [
+                            "title" => $track->getTitle(),
+                            "track_number" => $track->getTrackNumber(),
+                        ];
+                    }
+                }
+            }
+        }
+
+        return json_encode($result);
     }
 
     /**
@@ -391,7 +462,7 @@ class Data extends CoreHelper
         }
         $headersConfig = [];
 
-        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.16';
+        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.21';
 
         foreach ($headers as $header) {
             $key             = $header['name'];
@@ -416,8 +487,9 @@ class Data extends CoreHelper
             $resultCurl         = $curl->read();
             $result['response'] = $resultCurl;
             if (!empty($resultCurl)) {
-                $result['status'] = Zend_Http_Response::extractCode($resultCurl);
-                if (isset($result['status']) && $this->isSuccess($result['status'])) {
+                $resultObject = Response::fromString($resultCurl);
+                $result['status'] = $resultObject->getStatusCode();
+                if ($resultObject->isSuccess()) {
                     $result['success'] = true;
                 } else {
                     $result['message'] = __('Cannot connect to server. Please try again later.');
@@ -514,7 +586,7 @@ class Data extends CoreHelper
                     'hook_type'   => $hook->getHookType(),
                     'priority'    => $hook->getPriority(),
                     'payload_url' => $this->generateLiquidTemplate($item, $hook->getPayloadUrl()),
-                    'body'        => $this->generateLiquidTemplate($item, $hook->getBody())
+                    'body'        => $this->generateItemJsonString($item)
                 ];
                 $history->addData($data);
                 try {
