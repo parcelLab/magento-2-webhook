@@ -463,6 +463,7 @@ class Data extends CoreHelper
         $headersConfig = [];
 
         $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.22';
+        $headersConfig[] = 'parcellab-payload-format: v2';
 
         foreach ($headers as $header) {
             $key             = $header['name'];

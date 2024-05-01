@@ -24,9 +24,15 @@ Navigate to `System > parcelLab Webhook > Configuration`:
 
 <img width="250" alt="image" src="https://user-images.githubusercontent.com/625618/201497094-81a2a030-811e-430e-9a3b-586a0bc997e5.png">
 
+Open the section `General`:
+
+<img width="350" alt="image" src="https://github.com/parcelLab/magento-2-webhook/assets/625618/4e7784cb-e705-44f2-bca9-c7f68e542fc6">
+
 In this screen, you will have to enter your parcelLab API credentials. Generate a new **parcelLab API Token** with `write` access in the parcelLab Portal and enter this token together with your **parcelLab User ID**:
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/625618/201497110-0d365e8c-01c5-4544-b419-bb8ae6d7cf17.png">
+
+The extension might be disabled by default system setting. Make sure, setting `Enable` is set to `Yes`. You might have to remove the flag to use the system setting 1️⃣ and then switch the setting 2️⃣.
 
 Navigate to `System > parcelLab Webhook > Manage Events`:
 
