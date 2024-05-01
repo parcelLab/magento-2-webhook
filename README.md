@@ -4,6 +4,7 @@ _Please note:_ This extension is a fork of the excellent [Magento 2 Webhook by M
 
 > **Compatibility notice:**
 > For Magento < `2.6` use plugin version `2.4.21`
+> 
 > For Magento >= `2.6` use plugin version `2.4.22` or later 
 
 ## Install & Setup Guide
@@ -33,6 +34,12 @@ In this screen, you will have to enter your parcelLab API credentials. Generate 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/625618/201497110-0d365e8c-01c5-4544-b419-bb8ae6d7cf17.png">
 
 The extension might be disabled by default system setting. Make sure, setting `Enable` is set to `Yes`. You might have to remove the flag to use the system setting 1️⃣ and then switch the setting 2️⃣.
+
+<img width="350" alt="image" src="https://github.com/parcelLab/magento-2-webhook/assets/625618/753927a6-fa38-4952-8621-eb621b4cd7e8">
+
+This is the correct setting:
+
+<img width="350" alt="image" src="https://github.com/parcelLab/magento-2-webhook/assets/625618/da1fd669-7a8b-4b59-9cdc-d69f4c07fbd8">
 
 Navigate to `System > parcelLab Webhook > Manage Events`:
 
