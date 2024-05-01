@@ -48,7 +48,7 @@ use Mageplaza\Webhook\Model\Config\Source\Status;
 use Mageplaza\Webhook\Model\HistoryFactory;
 use Mageplaza\Webhook\Model\HookFactory;
 use Mageplaza\Webhook\Model\ResourceModel\Hook\Collection;
-use Zend_Http_Response;
+use Laminas\Http\Response;
 
 /**
  * Class Data
@@ -391,7 +391,7 @@ class Data extends CoreHelper
         }
         $headersConfig = [];
 
-        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.16';
+        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.21';
 
         foreach ($headers as $header) {
             $key             = $header['name'];
@@ -416,8 +416,9 @@ class Data extends CoreHelper
             $resultCurl         = $curl->read();
             $result['response'] = $resultCurl;
             if (!empty($resultCurl)) {
-                $result['status'] = Zend_Http_Response::extractCode($resultCurl);
-                if (isset($result['status']) && $this->isSuccess($result['status'])) {
+                $resultObject = Response::fromString($resultCurl);
+                $result['status'] = $resultObject->getStatusCode();
+                if ($resultObject->isSuccess()) {
                     $result['success'] = true;
                 } else {
                     $result['message'] = __('Cannot connect to server. Please try again later.');
