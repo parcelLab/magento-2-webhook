@@ -351,6 +351,15 @@ class Data extends CoreHelper
                     }
                 }
             }
+
+            $result["items"] = [];
+            foreach ($item->getItemsCollection() as $orderItem) {
+                $result["items"][] = [
+                    "name" => $orderItem->getName(),
+                    "sku" => $orderItem->getSku(),
+                    "qty" => $orderItem->getQty(),
+                ];
+            }
         }
 
         return json_encode($result);
@@ -462,7 +471,7 @@ class Data extends CoreHelper
         }
         $headersConfig = [];
 
-        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.22';
+        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.23';
         $headersConfig[] = 'parcellab-payload-format: v2';
 
         foreach ($headers as $header) {
