@@ -471,7 +471,7 @@ class Data extends CoreHelper
         }
         $headersConfig = [];
 
-        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.23';
+        $headersConfig[] = 'parcellab-magento-2-webhook: v2.4.24';
         $headersConfig[] = 'parcellab-payload-format: v2';
 
         foreach ($headers as $header) {
@@ -547,7 +547,7 @@ class Data extends CoreHelper
         $method       = $method ?: 'GET';
         $A1           = hash('md5', "{$username}:{$realm}:{$password}");
         $A2           = hash('md5', "{$method}:{$uri}");
-        $response     = hash('md5', "{$A1}:{$nonce}:{$nonceCount}:{$clientNonce}:{$qop}:${A2}");
+        $response     = hash('md5', "{$A1}:{$nonce}:{$nonceCount}:{$clientNonce}:{$qop}:{$A2}");
         $digestHeader = "Digest username=\"{$username}\", realm=\"{$realm}\", nonce=\"{$nonce}\", uri=\"{$uri}\", cnonce=\"{$clientNonce}\", nc={$nonceCount}, qop=\"{$qop}\", response=\"{$response}\", opaque=\"{$opaque}\", algorithm=\"{$algorithm}\"";
 
         return $digestHeader;

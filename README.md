@@ -6,7 +6,7 @@ _Please note:_ This extension is a fork of the excellent [Magento 2 Webhook by M
 >
 > For Magento < `2.6` use plugin version `2.4.21`
 > 
-> For Magento >= `2.6` use plugin version `2.4.23` or later 
+> For Magento >= `2.6` use plugin version `2.4.24` or later 
 
 ## Install & Setup Guide
 

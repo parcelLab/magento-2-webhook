@@ -6,7 +6,7 @@
     "liquid/liquid": "^1.4.42"
   },
   "type": "magento2-module",
-  "version": "2.4.23",
+  "version": "2.4.24",
   "license": "MIT",
   "authors": [
     {
