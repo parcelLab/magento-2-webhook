@@ -324,17 +324,41 @@ class Data extends CoreHelper
             $result["storeUrl"] = $item->getStore()->getBaseUrl();
             $result["items"] = [];
             foreach ($item->getItems() as $orderItem) {
-                /** @var Product $product */
-                $product = $orderItem->getProduct();
-                [$image, $productUrl] = $this->getProductUrls($product);
-                $result["items"][] = [
-                    "name" => $orderItem->getName(),
-                    "sku" => $orderItem->getSku(),
-                    "product_url" => $productUrl,
-                    "image_url" => $image,
-                    "product_type" => $product->getTypeId(),
-                    "qty_ordered" => $orderItem->getQtyOrdered(),
-                ];
+                try {
+                    /** @var Product $product */
+                    $product = $orderItem->getProduct();
+                    if ($product) {
+                        [$image, $productUrl] = $this->getProductUrls($product);
+                        $result["items"][] = [
+                            "name" => $orderItem->getName(),
+                            "sku" => $orderItem->getSku(),
+                            "product_url" => $productUrl,
+                            "image_url" => $image,
+                            "product_type" => $product->getTypeId(),
+                            "qty_ordered" => $orderItem->getQtyOrdered(),
+                        ];
+                    } else {
+                        $this->_logger->warning('Webhook: product not found for order item SKU ' . $orderItem->getSku() . ', skipping from payload');
+                        $result["items"][] = [
+                            "name" => $orderItem->getName(),
+                            "sku" => $orderItem->getSku(),
+                            "product_url" => null,
+                            "image_url" => null,
+                            "product_type" => null,
+                            "qty_ordered" => $orderItem->getQtyOrdered(),
+                        ];
+                    }
+                } catch (\Exception $e) {
+                    $this->_logger->warning('Webhook: failed to load product for order item SKU ' . $orderItem->getSku() . ': ' . $e->getMessage());
+                    $result["items"][] = [
+                        "name" => $orderItem->getName(),
+                        "sku" => $orderItem->getSku(),
+                        "product_url" => null,
+                        "image_url" => null,
+                        "product_type" => null,
+                        "qty_ordered" => $orderItem->getQtyOrdered(),
+                    ];
+                }
             }
         }
 
@@ -362,7 +386,16 @@ class Data extends CoreHelper
             }
         }
 
-        return json_encode($result);
+        $encoded = json_encode($result, JSON_INVALID_UTF8_SUBSTITUTE);
+        if ($encoded === false) {
+            $this->_logger->critical('Webhook: json_encode failed — ' . json_last_error_msg(), [
+                'increment_id' => $item->getIncrementId(),
+                'entity_id' => $item->getEntityId(),
+            ]);
+            return '{}';
+        }
+
+        return $encoded;
     }
 
     /**
