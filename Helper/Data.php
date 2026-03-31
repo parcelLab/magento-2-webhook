@@ -388,11 +388,16 @@ class Data extends CoreHelper
 
         $encoded = json_encode($result, JSON_INVALID_UTF8_SUBSTITUTE);
         if ($encoded === false) {
-            $this->_logger->critical('Webhook: json_encode failed — ' . json_last_error_msg(), [
+            $errorMsg = json_last_error_msg();
+            $this->_logger->critical('Webhook: json_encode failed — ' . $errorMsg, [
                 'increment_id' => $item->getIncrementId(),
                 'entity_id' => $item->getEntityId(),
             ]);
-            return '{}';
+            return json_encode([
+                'error' => 'json_encode failed: ' . $errorMsg,
+                'increment_id' => (string) $item->getIncrementId(),
+                'entity_id' => (string) $item->getEntityId(),
+            ], JSON_INVALID_UTF8_SUBSTITUTE) ?: '{}';
         }
 
         return $encoded;
